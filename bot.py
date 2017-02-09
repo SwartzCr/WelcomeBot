@@ -17,8 +17,8 @@ class Bot(object):
     def __init__(self, botnick=settings.botnick, welcome_message=settings.welcome_message,
         nick_source=settings.nick_source, wait_time=settings.wait_time,
         hello_list=settings.hello_list, help_list=settings.help_list):
-    	self.botnick = botnick
-    	self.welcome_message = welcome_message
+        self.botnick = botnick
+        self.welcome_message = welcome_message
         self.nick_source = nick_source
         self.wait_time = wait_time
         self.known_nicks = []
@@ -65,7 +65,7 @@ def irc_start(server): # pragma: no cover  (this excludes this function from tes
     return ircsock
 
 def join_irc(ircsock, botnick, channel):
-    ircsock.send("USER {0} {0} {0} :This is http://openhatch.org/'s greeter bot"
+    ircsock.send("USER {0} {0} {0} :This is #letsencrypt's greeter bot"
              ".\n".format(botnick))  # bot authentication
     ircsock.send("NICK {}\n".format(botnick))  # Assign the nick to the bot.
     if os.path.isfile("password.txt"):
@@ -103,7 +103,7 @@ def welcome_nick(newcomer, ircsock, channel, channel_greeters):
     ircsock.send("PRIVMSG {0} :Welcome {1}!  The channel is pretty quiet "
                  "right now, so I thought I'd say hello, and ping some people "
                  "(like {2}) that you're here.  If no one responds for a "
-                 "while, try emailing us at hello@openhatch.org or just try "
+                 "while, try posting on https://community.letsencrypt.org/ or just try "
                  "coming back later.  FYI, you're now on my list of known "
                  "nicknames, so I won't bother you again."
                  "\n".format(channel, newcomer, greeter_string(channel_greeters)))
@@ -124,6 +124,7 @@ def parse_messages(ircmsg):
     except:
         return None, None
 
+#TODO clean this up?
 # Cleans a nickname of decorators/identifiers
 def clean_nick(actor):
     if actor:   # In case an empty string gets passed
@@ -188,8 +189,8 @@ def bot_hello(greeting, actor, ircsock, channel):
 # Explains what the bot is when queried.
 def bot_help(ircsock, channel):
     ircsock.send("PRIVMSG {} :I'm a bot!  I'm from here <https://github"
-                 ".com/shaunagm/oh-irc-bot>.  You can change my behavior by "
-                 "submitting a pull request or by talking to shauna"
+                 ".com/swartzcr/WelcomeBot>.  You can change my behavior by "
+                 "submitting a pull request or by talking to swartzcr"
                  ".\n".format(channel))
 
 # Returns a grammatically correct string of the channel_greeters.
