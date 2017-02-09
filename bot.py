@@ -130,7 +130,7 @@ def clean_nick(actor):
     if actor:   # In case an empty string gets passed
         if actor.find("openhatch") != -1:  # If nick is like "openhatch_1234" don't clean.
             return actor
-        actor = actor.replace("_", "")  # Strip out trailing _ characters
+        actor = actor.rstrip("_")  # Strip out trailing _ characters
         while(actor[-1]) in "1234567890": # Remove trailing numbers
             actor = actor[:-1]
         if ('|' in actor):  # Remove location specifiers, etc.
@@ -141,13 +141,16 @@ def clean_nick(actor):
 def message_response(bot, ircmsg, actor, ircsock, channel, greeters):
 
     # if someone other than a newcomer speaks into the channel
-    if ircmsg.find("PRIVMSG " + channel) != -1 and actor not in [i.nick for i in bot.newcomers]:
+    if ircmsg.find("PRIVMSG " + channel) != -1 and actor not in bot.known_nicks:
+        NewComer(actor, bot)
+
+    if ircmsg.find("PRIVMSG " + channel) != -1 and actor in bot.known_nicks:
         process_newcomers(bot,bot.newcomers, ircsock, channel, greeters, welcome=0)   # Process/check newcomers without welcoming them
 
     # if someone (other than the bot) joins the channel
-    if ircmsg.find("JOIN " + channel) != -1 and actor != bot.botnick:
-        if [actor.replace("_", "")] not in bot.known_nicks + [i.nick for i in bot.newcomers]:  # And they're new
-            NewComer(actor, bot)
+    #if ircmsg.find("JOIN " + channel) != -1 and actor != bot.botnick:
+    #    if [actor.replace("_", "")] not in bot.known_nicks + [i.nick for i in bot.newcomers]:  # And they're new
+    #        NewComer(actor, bot)
 
     # if someone changes their nick while still in newcomers update that nick
     if ircmsg.find("NICK :") != -1 and actor != bot.botnick:
